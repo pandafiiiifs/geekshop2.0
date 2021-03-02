@@ -54,20 +54,20 @@
             </div>
 
            <div class="row">
-               {% for item in products %}
+               {% for products in products %}
                 <div class="col-lg-4 col-md-6 mb-4">
                     <div class="card h-100">
                         <a href="#">
                             <img class="card-img-top"
-                                 src="{%static  item.img %}"
+                                 src="{%static  products.img %}"
                                  alt="">
                         </a>
                         <div class="card-body">
                             <h4 class="card-title">
-                                <a href="#">{{item.name}}</a>
+                                <a href="#">{{products.name}}</a>
                             </h4>
                             <h5>{{item.price}}</h5>
-                            <p class="card-text">{{ item.description}}</p>
+                            <p class="card-text">{{ products.description}}</p>
                         </div>
                         <div class="card-footer text-center">
                             <button type="button" class="btn btn-outline-success">Отправить в корзину</button>

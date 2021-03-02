@@ -1,3 +1,7 @@
+import os
+import json
+
+dir = os.path.dirname(__file__)
 
 from django.shortcuts import render
 
@@ -30,6 +34,8 @@ def products(request):
              'img': 'vendor/img/products/Dark-blue-wide-leg-ASOs-DESIGN-trousers.png'},
         ]
     }
+    file_path = os.path.join(dir,'fixtures/products.json')
+    context.update(json.load(open(file_path,encoding='utf-8')))
     return render(request, 'mainapp/products.html', context)
 
 
