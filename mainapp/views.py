@@ -1,20 +1,23 @@
+import os
+import json
+
 from django.shortcuts import render
 
 from mainapp.models import Poduct, ProductCategory
 
+dir = os.path.dirname(__file__)
 
-def main(request):
-    content = {
-        'title': 'GeekShop'
-    }
-    return render(request, 'mainapp/index.html', content)
+
+# функции = вьюхи = контроллеры
+def index(request):
+    context = {'title': 'GeekShop'}
+    return render(request, 'mainapp/index.html', context)
 
 
 def products(request, id=None):
-    content = {
-        'title': 'GeekShop - Категории',
-        'categories': ProductCategory.objects.all(),
+    context = {
+        'title': 'GeekShop - Каталог',
         'products': Poduct.objects.all(),
+        'categories': ProductCategory.objects.all(),
     }
-    return render(request, 'mainapp/products.html', content)
-
+    return render(request, 'mainapp/products.html', context)
