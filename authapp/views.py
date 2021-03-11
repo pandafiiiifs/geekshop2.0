@@ -3,10 +3,11 @@ from django.contrib import auth
 from django.urls import reverse
 from django.contrib import messages
 
-from authapp.forms import UserLoginForm, UserRegisterForm, UserProfileForm
+from authapp.form import UserLoginForm, UserRegisterForm, UserProfileForm
+from basketapp.models import Basket
 
 
-
+# Create your views here.
 def login(request):
     if request.method == 'POST':
         form = UserLoginForm(data=request.POST)
@@ -17,38 +18,43 @@ def login(request):
             if user and user.is_active:
                 auth.login(request, user)
                 return HttpResponseRedirect(reverse('index'))
-        else:
-            print(form.errors)
     else:
         form = UserLoginForm()
-    context = {'form': form}
+    context = {
+        'tittle': "GeekShop - Авторизация",
+        'form': form
+    }
     return render(request, 'authapp/login.html', context)
 
 
 def register(request):
     if request.method == 'POST':
-        form = UserRegisterForm(data=request.POST)
+        form = UserRegisterForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
             messages.success(request, 'Вы успешно зарегистрировались!')
             return HttpResponseRedirect(reverse('auth:login'))
     else:
         form = UserRegisterForm()
-    context = {'form': form}
+    context = {
+        'tittle': 'GeekShop - Личный кабинет',
+        'form': form,
+    }
     return render(request, 'authapp/register.html', context)
 
 
 def profile(request):
     if request.method == 'POST':
-        form = UserProfileForm(data=request.POST, instance=request.user)
+        form = UserProfileForm(data=request.POST, files=request.FILES, instance=request.user)
         if form.is_valid():
             form.save()
             return HttpResponseRedirect(reverse('auth:profile'))
     else:
         form = UserProfileForm(instance=request.user)
     context = {
+        'tittle': 'GeekShop - Личный кабинет',
         'form': form,
-        'baskets': Basket.objects.all(),
+        'baskets': Basket.objects.filter(user=request.user),
     }
     return render(request, 'authapp/profile.html', context)
 
