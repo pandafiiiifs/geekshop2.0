@@ -1,7 +1,6 @@
 from django.contrib import admin
 
-from authapp.models import User
+from basketapp.models import Basket
 
 # Register your models here.
-
-admin.site.register(User)
+admin.site.register(Basket)
