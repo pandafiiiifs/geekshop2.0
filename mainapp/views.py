@@ -13,10 +13,7 @@ def index(request):
 def products(request, category_id=None, page=1):
     context = {'title': 'GeekShop - Каталог', 'categories': ProductCategory.objects.all()}
     if category_id:
-        products = Product.objects.filter(category_id=category_id).order_by('-price')
+        context.update({'products': Product.objects.filter(category_id= category_id)})
     else:
-        products = Product.objects.all().order_by('-price')
-    paginator = Paginator(products, 3)
-    products_paginator = paginator.page(page)
-    context.update({'products': products_paginator})
+        context.update({'products': Product.objects.all()})
     return render(request, 'mainapp/products.html', context)
