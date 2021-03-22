@@ -1,4 +1,3 @@
-
 from django import forms
 
 from authapp.forms import UserRegisterForm, UserProfileForm
