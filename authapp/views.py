@@ -1,60 +1,43 @@
 from django.shortcuts import render, HttpResponseRedirect
 from django.contrib import auth
-from django.urls import reverse
-from django.contrib import messages
+from django.urls import reverse, reverse_lazy
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import LoginView
+from django.views.generic import CreateView
+from django.contrib.messages.views import SuccessMessageMixin
 
-from authapp.form import UserLoginForm, UserRegisterForm, UserProfileForm
+from authapp.forms import UserLoginForm, UserRegisterForm, UserProfileForm
 from basketapp.models import Basket
 
 
-# Create your views here.
-def login(request):
-    if request.method == 'POST':
-        form = UserLoginForm(data=request.POST)
-        if form.is_valid():
-            username = request.POST['username']
-            password = request.POST['password']
-            user = auth.authenticate(username=username, password=password)
-            if user and user.is_active:
-                auth.login(request, user)
-                return HttpResponseRedirect(reverse('index'))
-    else:
-        form = UserLoginForm()
-    context = {
-        'tittle': "GeekShop - Авторизация",
-        'form': form
-    }
-    return render(request, 'authapp/login.html', context)
+
+class UserLoginView(LoginView):
+    template_name = 'authapp/login.html'
+    form_class = UserLoginForm
+    success_url = reverse_lazy('index')
 
 
-def register(request):
-    if request.method == 'POST':
-        form = UserRegisterForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Вы успешно зарегистрировались!')
-            return HttpResponseRedirect(reverse('auth:login'))
-    else:
-        form = UserRegisterForm()
-    context = {
-        'tittle': 'GeekShop - Личный кабинет',
-        'form': form,
-    }
-    return render(request, 'authapp/register.html', context)
+class UserRegisterView(SuccessMessageMixin, CreateView):
+    template_name = 'authapp/register.html'
+    form_class = UserRegisterForm
+    success_url = reverse_lazy('auth:login')
+    success_message = 'Вы успешно зарегистрировались!'
 
 
+
+@login_required
 def profile(request):
+    user = request.user
     if request.method == 'POST':
-        form = UserProfileForm(data=request.POST, files=request.FILES, instance=request.user)
+        form = UserProfileForm(data=request.POST, files=request.FILES, instance=user)
         if form.is_valid():
             form.save()
             return HttpResponseRedirect(reverse('auth:profile'))
     else:
-        form = UserProfileForm(instance=request.user)
+        form = UserProfileForm(instance=user)
     context = {
-        'tittle': 'GeekShop - Личный кабинет',
         'form': form,
-        'baskets': Basket.objects.filter(user=request.user),
+        'baskets': Basket.objects.filter(user=user),
     }
     return render(request, 'authapp/profile.html', context)
 
@@ -62,3 +45,5 @@ def profile(request):
 def logout(request):
     auth.logout(request)
     return HttpResponseRedirect(reverse('index'))
+
+
