@@ -49,7 +49,15 @@
                 <a href="{% url 'social:begin' 'google-oauth2' %}?next=/">
                     Вход через Google+
                 </a>
+
             </button>
+            <button class="btn btn-round form-control">
+                <a href="{% url 'social:begin' 'vk-oauth2' %}?next=/">
+                    Вход через ВКонтакте
+                </a>
+
+            </button>
+
         </div>
     </div>
 {% endblock %}
