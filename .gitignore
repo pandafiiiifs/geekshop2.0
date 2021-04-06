@@ -2,3 +2,6 @@
 __pycache__/
 db.sqlite3
 media
+geekshop/.env
+geekshop/google.json
+geekshop/vk.json
