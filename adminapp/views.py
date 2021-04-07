@@ -7,6 +7,10 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
 from authapp.models import User
 from adminapp.forms import UserAdminRegistrationForm, UserAdminProfileForm
+from django.contrib.auth.mixins import LoginRequiredMixin
+
+# FBV = Function-Based-View
+# CBV = Class-Based-View
 
 
 @user_passes_test(lambda u: u.is_superuser, login_url='/')
@@ -15,7 +19,7 @@ def index(request):
 
 
 # READ
-class UserListView(ListView):
+class UserListView(LoginRequiredMixin, ListView):
     model = User
     template_name = 'adminapp/admin-users-read.html'
 
@@ -25,23 +29,25 @@ class UserListView(ListView):
 
 
 # CREATE
-class UserCreatView(CreateView):
+class UserCreateView(CreateView):
     model = User
     template_name = 'adminapp/admin-users-create.html'
     form_class = UserAdminRegistrationForm
     success_url = reverse_lazy('admin_staff:admin_users')
 
+
 # UPDATE
 class UserUpdateView(UpdateView):
     model = User
-    template_name ='adminapp/admin-users-update-delete.html'
+    template_name = 'adminapp/admin-users-update-delete.html'
     form_class = UserAdminProfileForm
     success_url = reverse_lazy('admin_staff:admin_users')
 
     def get_context_data(self, **kwargs):
         context = super(UserUpdateView, self).get_context_data(**kwargs)
-        context['title'] = 'BookOfTea - Редактироввание пользователя'
+        context['title'] = 'GeekShop - Редактирование пользователя'
         return context
+
 
 # DELETE
 class UserDeleteView(DeleteView):
@@ -54,7 +60,3 @@ class UserDeleteView(DeleteView):
         self.object.is_active = False
         self.object.save()
         return HttpResponseRedirect(self.get_success_url())
-
-
-
-
