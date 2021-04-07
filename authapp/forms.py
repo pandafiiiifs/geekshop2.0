@@ -24,7 +24,7 @@ class UserLoginForm(AuthenticationForm):
 class UserRegisterForm(UserCreationForm):
     class Meta:
         model = User
-        fields = ('username', 'email', 'first_name', 'last_name', 'password1', 'password2')
+        fields = ('username', 'email', 'first_name', 'last_name', 'password1', 'password2', 'age')
 
     def __init__(self, *args, **kwargs):
         super(UserRegisterForm, self).__init__(*args, **kwargs)
@@ -32,10 +32,18 @@ class UserRegisterForm(UserCreationForm):
         self.fields['email'].widget.attrs['placeholder'] = 'Введите адрес эл. почты'
         self.fields['first_name'].widget.attrs['placeholder'] = 'Введите имя'
         self.fields['last_name'].widget.attrs['placeholder'] = 'Введите фамилию'
+        self.fields['age'].widget.attrs['placeholder'] = 'Ваш возраст?'
         self.fields['password1'].widget.attrs['placeholder'] = 'Введите пароль'
         self.fields['password2'].widget.attrs['placeholder'] = 'Подтвердите пароль'
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control py-4'
+
+    def clean_age(self):
+        data = self.cleaned_data['age']
+        if data < 18:
+            raise forms.ValidationError("Вы слишком молоды!")
+
+        return data
 
     def save(self):
         user = super(UserRegisterForm, self).save()
@@ -48,7 +56,7 @@ class UserRegisterForm(UserCreationForm):
         return user
 
 
-class UserProfileForm(UserChangeForm):
+class UserEditForm(UserChangeForm):
     avatar = forms.ImageField(widget=forms.FileInput(), required=False)
 
     class Meta:
@@ -56,7 +64,7 @@ class UserProfileForm(UserChangeForm):
         fields = ('first_name', 'last_name', 'avatar', 'username', 'email')
 
     def __init__(self, *args, **kwargs):
-        super(UserProfileForm, self).__init__(*args, **kwargs)
+        super(UserEditForm, self).__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control py-4'
         self.fields['username'].widget.attrs['readonly'] = True
@@ -67,7 +75,7 @@ class UserProfileForm(UserChangeForm):
 class UserProfileEditForm(forms.ModelForm):
     class Meta:
         model = UserProfile
-        fields = ('tagline' ,'gender', 'about_me')
+        fields = ('tagline', 'gender', 'about_me')
 
     def __init__(self, *args, **kwargs):
         super(UserProfileEditForm, self).__init__(*args, **kwargs)

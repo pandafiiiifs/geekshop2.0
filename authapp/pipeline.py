@@ -2,12 +2,9 @@ from collections import OrderedDict
 from datetime import datetime
 from urllib.parse import urlunparse, urlencode
 
-
 import requests
 from django.utils import timezone
 from social_core.exceptions import AuthForbidden
-from social_django.middleware import SocialAuthExceptionMiddleware
-
 
 from authapp.models import UserProfile
 
@@ -43,7 +40,3 @@ def save_user_profile(backend, user, response, *args, **kwargs):
         age = timezone.now().date().year - bdate.year
         if age < 18:
             user.delete()
-
-
-
-
