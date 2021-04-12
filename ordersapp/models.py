@@ -1,8 +1,18 @@
 
 from django.conf import settings
 from django.db import models
+
 from mainapp.models import Product
 
+
+
+class OrderItemQuerySet(models.QuerySet):
+
+   def delete(self, *args, **kwargs):
+       for object in self:
+           object.product.quantity += object.quantity
+           object.product.save()
+       super(OrderItemQuerySet, self).delete(*args, **kwargs)
 
 class Order(models.Model):
     FORMING = "FM"
@@ -79,6 +89,7 @@ class Order(models.Model):
 
 
 class OrderItem(models.Model):
+    objects = OrderItemQuerySet.as_manager()
     order = models.ForeignKey(
         Order,
         related_name="orderitems",
@@ -96,6 +107,10 @@ class OrderItem(models.Model):
         default=0
     )
 
+    @staticmethod
+    def get_item(pk):
+        return OrderItem.objects.filter(pk=pk).first()
+
     def get_product_cost(self):
         return self.product.price * self.quantity
 
@@ -105,3 +120,8 @@ class OrderItem(models.Model):
     class Meta:
         verbose_name = 'элемент заказа'
         verbose_name_plural = 'элементы заказа'
+
+    def delete(self):
+        self.product.quantity += self.quantity
+        self.product.save()
+        super(OrderItem, self).delete()
