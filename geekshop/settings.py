@@ -25,9 +25,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '1h^vs@7ozr6yo$$c%rm8145=$t4pc4j&r5=w$u*zor^z=s&fka'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1', '127.0.0.1:8000']
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -84,6 +84,15 @@ WSGI_APPLICATION = 'geekshop.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
+
+#DATABASES = {
+    #'default': {
+        #'ENGINE': 'django.db.backends.postgresql',
+        #'NAME': 'geekshop',
+        #'USER': 'postgres',
+
+    #}
+#}
 
 DATABASES = {
     'default': {
