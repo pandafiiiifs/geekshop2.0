@@ -1,6 +1,7 @@
-
 {% extends 'authapp/base.html' %}
-
+{% block title %}
+Вход
+{% endblock %}
 {% block content %}
     <div class="col-lg-5">
         {% if messages or form.non_field_errors %}
@@ -46,18 +47,10 @@
                 <div class="small"><a href="{% url 'auth:register' %}">Нужен аккаунт? Зарегистрируйся!</a></div>
             </div>
             <button class="btn btn-round form-control">
-                <a href="{% url 'social:begin' 'google-oauth2' %}?next=/">
-                    Вход через Google+
-                </a>
-
-            </button>
-            <button class="btn btn-round form-control">
                 <a href="{% url 'social:begin' 'vk-oauth2' %}?next=/">
-                    Вход через ВКонтакте
+                 Вход через ВКонтакте
                 </a>
-
             </button>
-
         </div>
     </div>
 {% endblock %}
