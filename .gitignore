@@ -1,7 +1,6 @@
 .idea
 __pycache__/
 db.sqlite3
-media
-geekshop/.env
-geekshop/google.json
-geekshop/vk.json
+!/geekshop/.env
+!/geekshop/vk.json
+tmp/
